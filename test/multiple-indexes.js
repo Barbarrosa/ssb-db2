@@ -47,7 +47,7 @@ test('second index', (t) => {
       path: dir,
     })
   let db = sbot.db
-  
+
   const feedId = '@abc'
   const mentionFeed = {
     type: 'post',

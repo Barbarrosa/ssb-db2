@@ -99,10 +99,16 @@ test('add a bunch of messages', async (t) => {
 
   let state = validate.initial()
   for (var i = 0; i < 1000; ++i) {
-    state = validate.appendNew(state, null, keys, { type: 'tick', count: i }, Date.now())
+    state = validate.appendNew(
+      state,
+      null,
+      keys,
+      { type: 'tick', count: i },
+      Date.now()
+    )
   }
 
-  const messages = state.queue.map(x => x.value)
+  const messages = state.queue.map((x) => x.value)
 
   const ended = DeferredPromise()
   const start = Date.now()
@@ -116,10 +122,7 @@ test('add a bunch of messages', async (t) => {
       if (err) t.fail(err)
 
       t.pass(`duration: ${duration}ms`)
-      fs.appendFileSync(
-        reportPath,
-        `| add 1000 elements | ${duration}ms |\n`
-      )
+      fs.appendFileSync(reportPath, `| add 1000 elements | ${duration}ms |\n`)
 
       sbot.close(() => ended.resolve())
     })
@@ -137,11 +140,23 @@ test('migrate (+db1)', async (t) => {
     .use(require('../migrate'))
     .call(null, { keys, path: dir })
 
-  while (true) {
-    const { current, target } = sbot.progress().indexes
-    if (current === target) break
-    else await sleep(500)
-  }
+  const progressPromise = new Promise((res, rej) => {
+    const interval = setInterval(() => {
+      try {
+        let { current, target } = sbot.progress().indexes
+        if (current === target) {
+          clearInterval(interval)
+          res()
+        }
+      } catch (e) {
+        clearInterval(interval)
+        rej(e)
+      }
+    }, 500)
+  })
+
+  await progressPromise
+
   t.pass('ssb-db has finished indexing')
 
   await sleep(500) // some silence to make it easier to read the CPU profiler
