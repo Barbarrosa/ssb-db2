@@ -1,0 +1,6 @@
+{
+  "rules": {
+    "node/no-unpublished-require": "off",
+    "no-loop-func": "off"
+  }
+}

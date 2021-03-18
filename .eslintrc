@@ -1,0 +1,25 @@
+{
+  "root": true,
+  "env": {
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": [
+    "prettier",
+    "optimize-regex",
+    "node"
+  ],
+  "rules": {
+    "prettier/prettier": "warn",
+    "optimize-regex/optimize-regex": "warn",
+    "no-unused-vars": "off",
+    "no-loop-func": "warn",
+    "no-await-in-loop": "warn",
+    "no-unreachable-loop": "warn",
+    "no-unmodified-loop-condition": "warn"
+  }
+}
